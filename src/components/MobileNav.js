@@ -1,7 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FaPlay } from 'react-icons/fa';
+import { useDispatch,useSelector} from 'react-redux';
+import { setAlgorithm,setSpeed,setMaze } from '../context/PathfinderSlice';
 
 const MobileNav = () => {
+
+    const dispatch=useDispatch();
+    const maze=useSelector(state=>state.pathfinder.maze);
+    const speed=useSelector(state=>state.pathfinder.speed);
+    const algorithm=useSelector(state=>state.pathfinder.algorithm);
+
+
     const mazeOptions = [
         { label: 'Binary Tree', value: 'binaryTree' },
         { label: 'No Maze', value: 'noMaze' },
@@ -20,14 +29,11 @@ const MobileNav = () => {
         { label: 'Depth First Search', value: 'depthFirstSearch' },
     ];
 
-    const [selectedMaze, setSelectedMaze] = useState(mazeOptions[0].value);
-    const [selectedAlgorithm, setSelectedAlgorithm] = useState(algorithmsOptions[0].value);
-    const [selectedSpeed, setSelectedSpeed] = useState(speedOptions[0].value);
 
     const onclickHandler = (e) => {
-        console.log(selectedMaze);
-        console.log(selectedAlgorithm);
-        console.log(selectedSpeed);
+        console.log(maze);
+        console.log(algorithm);
+        console.log(speed);
     }
 
 
@@ -39,8 +45,8 @@ const MobileNav = () => {
                 <div className="flex flex-col">
                     <label className="text-sm block">Maze</label>
                     <select
-                        value={selectedMaze}
-                        onChange={(e) => setSelectedMaze(e.target.value)}
+                        value={maze}
+                        onChange={(e) => {dispatch(setMaze(e.target.value))}}
                         className="bg-maze-background text-white px-4 py-2 rounded hover:bg-gray-800 transition-all duration-300"
                     >
                         {mazeOptions.map((option) => (
@@ -54,8 +60,8 @@ const MobileNav = () => {
                 <div className="flex flex-col">
                     <label className="text-sm block">Algorithms</label>
                     <select
-                        value={selectedAlgorithm}
-                        onChange={(e) => setSelectedAlgorithm(e.target.value)}
+                        value={algorithm}
+                        onChange={(e) => {dispatch(setAlgorithm(e.target.value))}}
                         className="bg-maze-background text-white px-4 py-2 rounded hover:bg-gray-800 transition-all duration-300"
                     >
                         {algorithmsOptions.map((option) => (
@@ -69,8 +75,8 @@ const MobileNav = () => {
                 <div className="flex flex-col">
                     <label className="text-sm block">Speed</label>
                     <select
-                        value={selectedSpeed}
-                        onChange={(e) => setSelectedSpeed(e.target.value)}
+                        value={speed}
+                        onChange={(e) => {dispatch(setSpeed(e.target.value))}}
                         className="bg-maze-background text-white px-4 py-2 rounded hover:bg-gray-800 transition-all duration-300"
                     >
                         {speedOptions.map((option) => (

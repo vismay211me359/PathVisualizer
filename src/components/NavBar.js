@@ -19,7 +19,7 @@ const NavBar = () => {
     }, []);
 
     return (
-        <div>
+        <div className='border-b-2 border-white'>
             {isMobile ? <MobileNav /> : <LargeNav />}
         </div>
     )

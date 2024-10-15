@@ -1,42 +1,24 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { createInitialGrid } from '../utils/createInitialGrid';
-import { initialEndCell, initialStartCell } from '../utils/constants';
+import { initialEndCell, initialStartCell,initial_Cols,initial_Rows } from '../utils/constants';
 
-const initialState = {
-    maze: 'binaryTree',
-    speed: 'fast',
-    algorithm: 'dijkstra',
-    grid: createInitialGrid(initialStartCell, initialEndCell),
-    isGraphVisualized: true,
+
+const initialState={
+    grid: createInitialGrid(initialStartCell, initialEndCell,initial_Rows,initial_Cols),
     startCell: initialStartCell,
     endCell: initialEndCell,
 };
 
-const pathfinderSlice = createSlice({
-    name: 'pathfinder',
+
+const gridSlice=createSlice({
+    name:"gridslice",
     initialState,
-    reducers: {
-        setMaze: (state, action) => {
-            state.maze = action.payload;
-        },
-        setSpeed: (state, action) => {
-            state.speed = action.payload;
-        },
-        setAlgorithm: (state, action) => {
-            state.algorithm = action.payload;
-        },
+    reducers:{
         setGrid: (state, action) => {
             state.grid = action.payload;
         },
-        toggleGraphVisualization: (state, action) => {
-            state.isGraphVisualized = action.payload;
-        },
         resetGrid: (state) => {
             state.grid = initialState.grid;
-        },
-        updateCell: (state, action) => {
-            const { row, col, updatedCell } = action.payload;
-            state.grid[row][col] = { ...state.grid[row][col], ...updatedCell };
         },
         updateStartCell: (state, action) => {
             const { row, col } = action.payload;
@@ -91,21 +73,23 @@ const pathfinderSlice = createSlice({
                 parent:null,
                 isPath:false,
             }
-        }
+        },
+        changeSizeOfGrid:(state,action)=>{
+            let rowsCount=action.payload.rows;
+            let colsCount=action.payload.cols;
+            state.grid=createInitialGrid(initialStartCell,{row:rowsCount-1,col:colsCount-1},rowsCount,colsCount);
+        },
     },
 })
 
 
 export const {
-    setMaze,
-    setSpeed,
-    setAlgorithm,
     setGrid,
-    toggleGraphVisualization,
     resetGrid,
-    updateCell,
     updateStartCell,
-    updateEndCell
-} = pathfinderSlice.actions;
+    updateEndCell,
+    changeSizeOfGrid,
+}=gridSlice.actions;
 
-export default pathfinderSlice.reducer;
+
+export default gridSlice.reducer;

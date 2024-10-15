@@ -1,15 +1,15 @@
 import React from 'react';
 import { FaPlay } from 'react-icons/fa';
 import { useDispatch,useSelector} from 'react-redux';
-import { setAlgorithm,setSpeed,setMaze } from '../context/PathfinderSlice';
+import { setAlgorithm,setMaze,setSpeed } from '../context/SettingsSlice';
 
 
 const LargeNav = () => {
 
     const dispatch=useDispatch();
-    const maze=useSelector(state=>state.pathfinder.maze);
-    const speed=useSelector(state=>state.pathfinder.speed);
-    const algorithm=useSelector(state=>state.pathfinder.algorithm);
+    const maze=useSelector(state=>state.settings.maze);
+    const speed=useSelector(state=>state.settings.speed);
+    const algorithm=useSelector(state=>state.settings.algorithm);
 
     const mazeOptions = [
         { label: 'Binary Tree', value: 'binaryTree' },

@@ -1,9 +1,7 @@
-import { MAX_COLS, MAX_ROWS } from "./constants";
 
-
-export function createInitialGrid(startCell, endCell) {
-    const rows = MAX_ROWS;
-    const cols = MAX_COLS;
+export function createInitialGrid(startCell, endCell,rowsCount,colsCount) {
+    const rows = rowsCount;
+    const cols = colsCount;
     const grid = [];
     for (let row = 0; row < rows; row++) {
         const currentRow = [];

@@ -1,8 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
-import pathfinderReducer from "../context/PathfinderSlice"
+import gridsReducer from "../context/GridsSlice"
+import settingsReducer from "../context/SettingsSlice";
+import visualizeReducer from "../context/VisualizeSlice";
 
 export const store = configureStore({
   reducer: {
-    pathfinder: pathfinderReducer,
+    settings:settingsReducer,
+    gridslice:gridsReducer,
+    visualization:visualizeReducer,
   },
 });

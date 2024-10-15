@@ -1,12 +1,12 @@
-export const MAX_ROWS=49;
-export const MAX_COLS=39;
+export const initial_Rows=39;
+export const initial_Cols=49;
 
 export const initialStartCell={
-    row:1,
-    col:1
+    row:0,
+    col:0
 }
 
 export const initialEndCell={
-    row:MAX_ROWS-2,
-    col:MAX_COLS-2
+    row:initial_Rows-1,
+    col:initial_Cols-1
 }

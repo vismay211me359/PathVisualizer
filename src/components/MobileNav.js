@@ -9,6 +9,7 @@ const MobileNav = () => {
     const maze = useSelector(state => state.settings.maze);
     const speed = useSelector(state => state.settings.speed);
     const algorithm = useSelector(state => state.settings.algorithm);
+    const isGraphVisualizing=useSelector(state=>state.visualization.isGraphVisualized);
 
 
     const mazeOptions = [
@@ -47,7 +48,8 @@ const MobileNav = () => {
                     <select
                         value={maze}
                         onChange={(e) => { dispatch(setMaze(e.target.value)) }}
-                        className="bg-maze-background text-white px-4 py-2 rounded hover:bg-gray-800 transition-all duration-300"
+                        className="bg-maze-background text-white px-4 py-2 rounded hover:bg-gray-800 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                        disabled={isGraphVisualizing}
                     >
                         {mazeOptions.map((option) => (
                             <option key={option.value} value={option.value}>
@@ -62,7 +64,8 @@ const MobileNav = () => {
                     <select
                         value={algorithm}
                         onChange={(e) => { dispatch(setAlgorithm(e.target.value)) }}
-                        className="bg-maze-background text-white px-4 py-2 rounded hover:bg-gray-800 transition-all duration-300"
+                        className="bg-maze-background text-white px-4 py-2 rounded hover:bg-gray-800 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                        disabled={isGraphVisualizing}
                     >
                         {algorithmsOptions.map((option) => (
                             <option key={option.value} value={option.value}>
@@ -77,7 +80,8 @@ const MobileNav = () => {
                     <select
                         value={speed}
                         onChange={(e) => { dispatch(setSpeed(e.target.value)) }}
-                        className="bg-maze-background text-white px-4 py-2 rounded hover:bg-gray-800 transition-all duration-300"
+                        className="bg-maze-background text-white px-4 py-2 rounded hover:bg-gray-800 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                        disabled={isGraphVisualizing}
                     >
                         {speedOptions.map((option) => (
                             <option key={option.value} value={option.value}>
@@ -91,20 +95,20 @@ const MobileNav = () => {
             {/* Buttons Section */}
             <div className="flex flex-wrap justify-between items-center mt-4 w-full">
                 <div className="flex flex-col md:flex-row w-full md:w-auto space-y-2 md:space-y-0 md:space-x-2">
-                    <button className="bg-maze-background px-4 py-2 rounded text-white hover:bg-gray-800 transition-all duration-300">
+                    <button className="bg-maze-background px-4 py-2 rounded text-white hover:bg-gray-800 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed" disabled={isGraphVisualizing}>
                         Clear Board
                     </button>
-                    <button className="bg-maze-background px-4 py-2 rounded text-white hover:bg-gray-800 transition-all duration-300">
+                    <button className="bg-maze-background px-4 py-2 rounded text-white hover:bg-gray-800 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed" disabled={isGraphVisualizing}>
                         Clear Walls
                     </button>
                 </div>
 
                 <div className="flex flex-col md:flex-row w-full md:w-auto space-y-2 md:space-y-0 md:space-x-2 mt-2 md:mt-0">
-                    <button className="bg-maze-background px-4 py-2 rounded text-white hover:bg-gray-800 transition-all duration-300">
+                    <button className="bg-maze-background px-4 py-2 rounded text-white hover:bg-gray-800 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed" disabled={isGraphVisualizing}>
                         Clear Paths
                     </button>
                     <div className='flex items-center justify-center'>
-                    <button className="bg-custom-green p-3 rounded-full text-white hover:bg-green-600 transition-all duration-300" onClick={onclickHandler}>
+                    <button className="bg-custom-green p-3 rounded-full text-white hover:bg-green-600 transition-all duration-300 disabled:cursor-not-allowed disabled:bg-green-300" onClick={onclickHandler} disabled={isGraphVisualizing}>
                         <FaPlay />
                     </button>
                     </div>

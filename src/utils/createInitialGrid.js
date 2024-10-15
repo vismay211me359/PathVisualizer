@@ -25,6 +25,7 @@ function createCell(col, row, startCell, endCell) {
             isTraversed: false,
             parent: null,
             isPath: false,
+            wallBeforeStartEnd:false,
         }
     }
     if (row === endCell.row && col === endCell.col) {
@@ -38,6 +39,7 @@ function createCell(col, row, startCell, endCell) {
             isTraversed:false,
             parent:null,
             isPath:false,
+            wallBeforeStartEnd:false,
         }
     }
     return {
@@ -49,6 +51,7 @@ function createCell(col, row, startCell, endCell) {
         isPath: false,
         distance: Infinity,
         isTraversed: false,
-        parent: null
+        parent: null,
+        wallBeforeStartEnd:false,
     };
 }

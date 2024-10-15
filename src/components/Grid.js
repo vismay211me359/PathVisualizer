@@ -3,7 +3,7 @@ import { useSelector,useDispatch } from 'react-redux';
 import { FaChevronUp, FaChevronDown, FaPlay, FaInfoCircle,FaExchangeAlt } from 'react-icons/fa';
 import { SiInstapaper } from 'react-icons/si';
 import { initial_Cols, initial_Rows } from '../utils/constants';
-import { changeSizeOfGrid,updateCellForWall } from '../context/GridsSlice';
+import { changeSizeOfGrid,updateCellForWall, updateEndCell, updateStartCell } from '../context/GridsSlice';
 import { toast} from 'react-toastify';
 
 const Grid = ({ toggleNavbar, isNavbarVisible }) => {
@@ -13,6 +13,8 @@ const Grid = ({ toggleNavbar, isNavbarVisible }) => {
     const y = grid[0].length;
     const [size, setSize] = useState({ width: '100vw', height: '100vw' });
     const [isMousePressed, setIsMousePressed] = useState(false);
+    const [isDraggingStart, setIsDraggingStart] = useState(false); // Is the start cell being dragged?
+    const [isDraggingEnd, setIsDraggingEnd] = useState(false); // Is the end cell being dragged?
 
     const dispatch=useDispatch();
 
@@ -84,22 +86,48 @@ const Grid = ({ toggleNavbar, isNavbarVisible }) => {
     
     // Function to handle when mouse is pressed down on a cell
     const handleMouseDown = (rowIndex, colIndex) => {
-        if (!isGraphVisualizing && !grid[rowIndex][colIndex].isStart && !grid[rowIndex][colIndex].isEnd) {
-            dispatch(updateCellForWall({row:rowIndex,col:colIndex}));
-            setIsMousePressed(true);
+        if(isGraphVisualizing){
+            return;
+        }
+        else{
+            if(grid[rowIndex][colIndex].isStart){
+                setIsDraggingStart(true);
+            }
+            else if(grid[rowIndex][colIndex].isEnd){
+                setIsDraggingEnd(true);
+            }
+            else{
+                dispatch(updateCellForWall({row:rowIndex,col:colIndex}));
+                setIsMousePressed(true);
+            }
         }
     };
 
     // Function to handle when mouse is dragged over a cell
     const handleMouseEnter = (rowIndex, colIndex) => {
-        if (!isGraphVisualizing && isMousePressed && !grid[rowIndex][colIndex].isStart && !grid[rowIndex][colIndex].isEnd) {
-            dispatch(updateCellForWall({row:rowIndex,col:colIndex}));
+        if(isGraphVisualizing){
+            return;
+        }
+        else{
+            if(isDraggingStart  && !grid[rowIndex][colIndex].isEnd){
+                dispatch(updateStartCell({row:rowIndex,col:colIndex}));
+            }
+            else if(isDraggingEnd  && !grid[rowIndex][colIndex].isStart){
+                dispatch(updateEndCell({row:rowIndex,col:colIndex}));
+            }
+            else{
+                if (!isGraphVisualizing && isMousePressed && !grid[rowIndex][colIndex].isStart && !grid[rowIndex][colIndex].isEnd) {
+                    dispatch(updateCellForWall({row:rowIndex,col:colIndex}));
+                }
+            }
         }
     };
 
     // Function to handle when mouse button is released
     const handleMouseUp = () => {
         setIsMousePressed(false);
+        setIsDraggingEnd(false);
+        setIsDraggingStart(false);
     };
 
 
@@ -125,11 +153,11 @@ const Grid = ({ toggleNavbar, isNavbarVisible }) => {
                             row.map((cell, colIndex) => (
                                 <div
                                     key={`${rowIndex}-${colIndex}`}
-                                    className={`${borderVisible ? 'border border-white' : ''} flex items-center justify-center`}
+                                    className={`${borderVisible ? 'border-white border-[0.5px]' : ''} flex items-center justify-center`}
                                     style={{
                                         backgroundColor: cell.isStart ? 'green' :
-                                            cell.isEnd ? 'red' :
-                                                cell.isWall ? 'gray' : 'transparent',
+                                            cell.isEnd ? 'blue' :
+                                                cell.isWall ? 'red' : 'transparent',
                                     }}
                                     onMouseDown={()=>handleMouseDown(rowIndex,colIndex)}
                                     onMouseEnter={()=>handleMouseEnter(rowIndex,colIndex)}
@@ -157,8 +185,8 @@ const Grid = ({ toggleNavbar, isNavbarVisible }) => {
                     </button>
 
                     <button
-                        className="p-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300"
-                        onClick={handleFormToggle}
+                        className="p-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 disabled:cursor-not-allowed disabled:bg-blue-400"
+                        onClick={handleFormToggle} disabled={isGraphVisualizing}
                     >
                         <SiInstapaper />
                     </button>

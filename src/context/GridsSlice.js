@@ -21,58 +21,20 @@ const gridSlice=createSlice({
             state.grid = initialState.grid;
         },
         updateStartCell: (state, action) => {
-            const { row, col } = action.payload;
-            const previousRow = state.startCell.row;
-            const previousCol = state.startCell.col;
-            state.grid[previousRow][previousCol] = {
-                row: previousRow,
-                col: previousCol,
-                isStart: false,
-                isEnd: false,
-                isWall: false,
-                isPath: false,
-                distance: Infinity,
-                isTraversed: false,
-                parent: null
-            }
-            state.grid[row][col] = {
-                row,
-                col,
-                isEnd: false,
-                isWall: false,
-                distance: 0,
-                isStart: true,
-                isTraversed: false,
-                parent: null,
-                isPath: false,
-            }
+            state.grid[state.startCell.row][state.startCell.col].isStart=false;
+            state.grid[state.startCell.row][state.startCell.col].isWall=state.grid[state.startCell.row][state.startCell.col].wallBeforeStartEnd;
+            state.startCell.row=action.payload.row;
+            state.startCell.col=action.payload.col;
+            state.grid[state.startCell.row][state.startCell.col].isStart=true;
+            state.grid[state.startCell.row][state.startCell.col].isWall=false;
         },
         updateEndCell: (state, action) => {
-            const {row,col}=action.payload;
-            const previousRow=state.endCell.row;
-            const previousCol=state.endCell.col;
-            state.grid[previousRow][previousCol] = {
-                row: previousRow,
-                col: previousCol,
-                isStart: false,
-                isEnd: false,
-                isWall: false,
-                isPath: false,
-                distance: Infinity,
-                isTraversed: false,
-                parent: null
-            }
-            state.grid[row][col]={
-                row,
-                col,
-                isEnd:true,
-                isWall:false,
-                distance:Infinity,
-                isStart:false,
-                isTraversed:false,
-                parent:null,
-                isPath:false,
-            }
+            state.grid[state.endCell.row][state.endCell.col].isEnd=false;
+            state.grid[state.endCell.row][state.endCell.col].isWall=state.grid[state.endCell.row][state.endCell.col].wallBeforeStartEnd;
+            state.endCell.row=action.payload.row;
+            state.endCell.col=action.payload.col;
+            state.grid[state.endCell.row][state.endCell.col].isEnd=true;
+            state.grid[state.endCell.row][state.endCell.col].isWall=false;
         },
         changeSizeOfGrid:(state,action)=>{
             let rowsCount=action.payload.rows;
@@ -81,6 +43,7 @@ const gridSlice=createSlice({
         },
         updateCellForWall:(state,action)=>{
             state.grid[action.payload.row][action.payload.col].isWall=!(state.grid[action.payload.row][action.payload.col].isWall);
+            state.grid[action.payload.row][action.payload.col].wallBeforeStartEnd=!(state.grid[action.payload.row][action.payload.col].wallBeforeStartEnd);    
         }
     },
 })

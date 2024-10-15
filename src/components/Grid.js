@@ -3,14 +3,16 @@ import { useSelector,useDispatch } from 'react-redux';
 import { FaChevronUp, FaChevronDown, FaPlay, FaInfoCircle,FaExchangeAlt } from 'react-icons/fa';
 import { SiInstapaper } from 'react-icons/si';
 import { initial_Cols, initial_Rows } from '../utils/constants';
-import { changeSizeOfGrid } from '../context/GridsSlice';
+import { changeSizeOfGrid,updateCellForWall } from '../context/GridsSlice';
 import { toast} from 'react-toastify';
 
 const Grid = ({ toggleNavbar, isNavbarVisible }) => {
     const grid = useSelector(state => state.gridslice.grid);
+    const isGraphVisualizing=useSelector(state=>state.visualization.isGraphVisualized);
     const x = grid.length;
     const y = grid[0].length;
     const [size, setSize] = useState({ width: '100vw', height: '100vw' });
+    const [isMousePressed, setIsMousePressed] = useState(false);
 
     const dispatch=useDispatch();
 
@@ -78,6 +80,30 @@ const Grid = ({ toggleNavbar, isNavbarVisible }) => {
         toggleNavbar();
     }
 
+
+    
+    // Function to handle when mouse is pressed down on a cell
+    const handleMouseDown = (rowIndex, colIndex) => {
+        if (!isGraphVisualizing && !grid[rowIndex][colIndex].isStart && !grid[rowIndex][colIndex].isEnd) {
+            dispatch(updateCellForWall({row:rowIndex,col:colIndex}));
+            setIsMousePressed(true);
+        }
+    };
+
+    // Function to handle when mouse is dragged over a cell
+    const handleMouseEnter = (rowIndex, colIndex) => {
+        if (!isGraphVisualizing && isMousePressed && !grid[rowIndex][colIndex].isStart && !grid[rowIndex][colIndex].isEnd) {
+            dispatch(updateCellForWall({row:rowIndex,col:colIndex}));
+        }
+    };
+
+    // Function to handle when mouse button is released
+    const handleMouseUp = () => {
+        setIsMousePressed(false);
+    };
+
+
+
     return (
         <div>
             <div
@@ -105,6 +131,9 @@ const Grid = ({ toggleNavbar, isNavbarVisible }) => {
                                             cell.isEnd ? 'red' :
                                                 cell.isWall ? 'gray' : 'transparent',
                                     }}
+                                    onMouseDown={()=>handleMouseDown(rowIndex,colIndex)}
+                                    onMouseEnter={()=>handleMouseEnter(rowIndex,colIndex)}
+                                    onMouseUp={handleMouseUp}
                                 >
 
                                 </div>

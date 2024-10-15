@@ -79,6 +79,9 @@ const gridSlice=createSlice({
             let colsCount=action.payload.cols;
             state.grid=createInitialGrid(initialStartCell,{row:rowsCount-1,col:colsCount-1},rowsCount,colsCount);
         },
+        updateCellForWall:(state,action)=>{
+            state.grid[action.payload.row][action.payload.col].isWall=!(state.grid[action.payload.row][action.payload.col].isWall);
+        }
     },
 })
 
@@ -89,6 +92,7 @@ export const {
     updateStartCell,
     updateEndCell,
     changeSizeOfGrid,
+    updateCellForWall,
 }=gridSlice.actions;
 
 

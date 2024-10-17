@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState={
     maze: 'binaryTree',
-    speed: 'fast',
+    speed: 0.5,
     algorithm: 'dijkstra',
 };
 

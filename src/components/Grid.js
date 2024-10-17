@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect} from 'react';
 import { useSelector,useDispatch } from 'react-redux';
 import { FaChevronUp, FaChevronDown, FaPlay, FaInfoCircle,FaExchangeAlt } from 'react-icons/fa';
 import { SiInstapaper } from 'react-icons/si';
@@ -142,7 +142,7 @@ const Grid = ({ toggleNavbar, isNavbarVisible }) => {
                 }}
             >
                 <div className='pt-10 px-2'>
-                    <div className="grid"
+                    <div className={`grid border-sky-200 border-l border-b ${!borderVisible ? 'border-r border-t' : ''}`}
                         style={{
                             gridTemplateColumns: `repeat(${y}, 1fr)`,
                             gridTemplateRows: `repeat(${x}, 1fr)`,
@@ -153,11 +153,11 @@ const Grid = ({ toggleNavbar, isNavbarVisible }) => {
                             row.map((cell, colIndex) => (
                                 <div
                                     key={`${rowIndex}-${colIndex}`}
-                                    className={`${borderVisible ? 'border-white border-[0.5px]' : ''} flex items-center justify-center`}
+                                    className={`${borderVisible ? 'border-sky-200 border-r border-t' : ''} flex items-center justify-center ${ cell.cellDesign ? 'animate-wallExpand' : ''}`}
                                     style={{
                                         backgroundColor: cell.isStart ? 'green' :
-                                            cell.isEnd ? 'blue' :
-                                                cell.isWall ? 'red' : 'transparent',
+                                            cell.isEnd ? 'red' :
+                                                cell.isWall ? 'white' : 'transparent',
                                     }}
                                     onMouseDown={()=>handleMouseDown(rowIndex,colIndex)}
                                     onMouseEnter={()=>handleMouseEnter(rowIndex,colIndex)}
@@ -178,8 +178,8 @@ const Grid = ({ toggleNavbar, isNavbarVisible }) => {
                     </button>
 
                     <button
-                        className="bg-custom-green p-4 rounded-full text-white hover:bg-green-600 transition-all duration-300"
-                        onClick={onclickHandler}
+                        className="bg-custom-green p-4 rounded-full text-white hover:bg-green-600 transition-all duration-300 disabled:cursor-not-allowed disabled:bg-green-300"
+                        onClick={onclickHandler} disabled={isGraphVisualizing}
                     >
                         <FaPlay />
                     </button>

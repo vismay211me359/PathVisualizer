@@ -121,7 +121,70 @@ const gridSlice = createSlice({
                 state.grid = randomWallsFunction(state.grid);
             }
             else {
-
+                const {horizontal,line,size}=action.payload.recursive;
+                const {start,end}=size;
+                let randomValue=Math.floor(Math.random() * (end - start + 1)) + start;
+                let secondRandomValue=randomValue;
+                if(horizontal){
+                    if((start!==0  || end!==(state.grid[0].length-1))){
+                        if(start!==0  && end!==(state.grid[0].length-1)){
+                            if(!state.grid[line][start-1].isWall){
+                                randomValue=start;
+                            }
+                            if(!state.grid[line][end+1].isWall){
+                                secondRandomValue=end;
+                            }
+                        }
+                        else if(start!==0){
+                            if(!state.grid[line][start-1].isWall){
+                                randomValue=start;
+                            }
+                        }
+                        else{
+                            if(!state.grid[line][end+1].isWall){
+                                randomValue=end;
+                            }
+                        }
+                    }
+                    for(let i=start;i<=end;++i){
+                        if(i===randomValue || state.grid[line][i].isStart  || state.grid[line][i].isEnd  || i===secondRandomValue){
+                            continue;
+                        }
+                        state.grid[line][i].isWall=true;
+                        state.grid[line][i].wallBeforeStartEnd=true;
+                        state.grid[line][i].cellDesign=true;
+                    }
+                }
+                else{
+                    if((start!==0  || end!==(state.grid.length-1))){
+                        if(start!==0  && end!==(state.grid.length-1)){
+                            if(!state.grid[start-1][line].isWall){
+                                randomValue=start;
+                            }
+                            if(!state.grid[end+1][line].isWall){
+                                secondRandomValue=end;
+                            }
+                        }
+                        else if(start!==0){
+                            if(!state.grid[start-1][line].isWall){
+                                randomValue=start;
+                            }
+                        }
+                        else{
+                            if(!state.grid[end+1][line].isWall){
+                                randomValue=end;
+                            }
+                        }
+                    }
+                    for(let i=start;i<=end;++i){
+                        if(i===randomValue  || state.grid[i][line].isStart  || state.grid[i][line].isEnd  || i===secondRandomValue){
+                            continue;
+                        }
+                        state.grid[i][line].isWall=true;
+                        state.grid[i][line].wallBeforeStartEnd=true;
+                        state.grid[i][line].cellDesign=true;
+                    }
+                }
             }
         }
     },

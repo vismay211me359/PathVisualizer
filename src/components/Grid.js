@@ -5,16 +5,21 @@ import { SiInstapaper } from 'react-icons/si';
 import { initial_Cols, initial_Rows } from '../utils/constants';
 import { changeSizeOfGrid,updateCellForWall, updateEndCell, updateStartCell } from '../context/GridsSlice';
 import { toast} from 'react-toastify';
+import { toggleGraphVisualization,togglePathVisualization } from '../context/VisualizeSlice';
+import { pathHandlerFunction } from '../utils/pathAlgos.js/pathHandler';
 
 const Grid = ({ toggleNavbar, isNavbarVisible }) => {
     const grid = useSelector(state => state.gridslice.grid);
     const isGraphVisualizing=useSelector(state=>state.visualization.isGraphVisualized);
+    const isPathVisualizing=useSelector(state=>state.visualization.isPathVisualized);
     const x = grid.length;
     const y = grid[0].length;
     const [size, setSize] = useState({ width: '100vw', height: '100vw' });
     const [isMousePressed, setIsMousePressed] = useState(false);
     const [isDraggingStart, setIsDraggingStart] = useState(false); // Is the start cell being dragged?
     const [isDraggingEnd, setIsDraggingEnd] = useState(false); // Is the end cell being dragged?
+    const speed = useSelector(state => state.settings.speed);
+    const algorithm = useSelector(state => state.settings.algorithm);
 
     const dispatch=useDispatch();
 
@@ -47,6 +52,8 @@ const Grid = ({ toggleNavbar, isNavbarVisible }) => {
         setRows(initial_Rows); 
         setCols(initial_Cols);
         handleFormToggle();
+        dispatch(toggleGraphVisualization(false));
+        dispatch(togglePathVisualization(false));
     };
 
     useEffect(() => {
@@ -71,10 +78,17 @@ const Grid = ({ toggleNavbar, isNavbarVisible }) => {
         return () => window.removeEventListener('resize', updateSize);
     }, []);
 
-    const onclickHandler = (e) => {
+    const onclickHandler = async(e) => {
         e.preventDefault();
-        console.log(grid.length);
-        console.log(grid[0].length);
+        dispatch(toggleGraphVisualization(true));
+        dispatch(togglePathVisualization(true));
+        try{
+            await pathHandlerFunction(grid,speed,algorithm);
+            dispatch(toggleGraphVisualization(false));
+        }catch(err){
+            toast.error("Error!, Reload...",{autoClose:5000});
+            console.log(err);
+        }
     }
 
     const navbarHandler = (e) => {
@@ -86,7 +100,7 @@ const Grid = ({ toggleNavbar, isNavbarVisible }) => {
     
     // Function to handle when mouse is pressed down on a cell
     const handleMouseDown = (rowIndex, colIndex) => {
-        if(isGraphVisualizing){
+        if(isGraphVisualizing || isPathVisualizing){
             return;
         }
         else{
@@ -105,7 +119,7 @@ const Grid = ({ toggleNavbar, isNavbarVisible }) => {
 
     // Function to handle when mouse is dragged over a cell
     const handleMouseEnter = (rowIndex, colIndex) => {
-        if(isGraphVisualizing){
+        if(isGraphVisualizing || isPathVisualizing){
             return;
         }
         else{
@@ -153,17 +167,19 @@ const Grid = ({ toggleNavbar, isNavbarVisible }) => {
                             row.map((cell, colIndex) => (
                                 <div
                                     key={`${rowIndex}-${colIndex}`}
-                                    className={`${borderVisible ? 'border-sky-200 border-r border-t' : ''} flex items-center justify-center ${ cell.cellDesign ? 'animate-wallExpand' : ''}`}
+                                    className={`${borderVisible ? 'border-sky-200 border-r border-t' : ''} flex items-center justify-center ${ cell.cellDesign ? (cell.isPath ? 'animate-path' : (cell.isTraversed ? 'animate-traversed' : (cell.isWall ? 'animate-wallExpand' : ''))):''}`}
                                     style={{
                                         backgroundColor: cell.isStart ? 'green' :
                                             cell.isEnd ? 'red' :
+                                            cell.isPath ? '#fde68a' :
+                                            cell.isTraversed ? '#22d3ee' :
                                                 cell.isWall ? 'white' : 'transparent',
                                     }}
                                     onMouseDown={()=>handleMouseDown(rowIndex,colIndex)}
                                     onMouseEnter={()=>handleMouseEnter(rowIndex,colIndex)}
                                     onMouseUp={handleMouseUp}
                                 >
-
+                                    
                                 </div>
                             ))
                         ))}
@@ -179,7 +195,7 @@ const Grid = ({ toggleNavbar, isNavbarVisible }) => {
 
                     <button
                         className="bg-custom-green p-4 rounded-full text-white hover:bg-green-600 transition-all duration-300 disabled:cursor-not-allowed disabled:bg-green-300"
-                        onClick={onclickHandler} disabled={isGraphVisualizing}
+                        onClick={onclickHandler} disabled={isGraphVisualizing || isPathVisualizing}
                     >
                         <FaPlay />
                     </button>

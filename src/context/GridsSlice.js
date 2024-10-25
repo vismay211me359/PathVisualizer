@@ -186,6 +186,51 @@ const gridSlice = createSlice({
                     }
                 }
             }
+        },
+        createPath:(state,action)=>{
+            const {node,isPath}=action.payload;
+            if(isPath){
+                state.grid[node.row][node.col].isPath=true;
+                state.grid[node.row][node.col].cellDesign=true;
+                state.grid[node.row][node.col].isTraversed=false;
+            }
+            else{
+                state.grid[node.row][node.col].isTraversed=true;
+                state.grid[node.row][node.col].cellDesign=true;
+            }
+        },
+        clearPath:(state,action)=>{
+            const rows=state.grid.length;
+            const cols=state.grid[0].length;
+            for(let i=0;i<rows;++i){
+                for(let j=0;j<cols;++j){
+                    if(state.grid[i][j].isStart){
+                        state.grid[i][j].distance=0;
+                        state.grid[i][j].isTraversed=false;
+                        state.grid[i][j].isWall=false;
+                        state.grid[i][j].wallBeforeStartEnd=false;
+                        state.grid[i][j].cellDesign=true;
+                        state.grid[i][j].parent=null;
+                        state.grid[i][j].isPath=false;
+                    }
+                    else if(state.grid[i][j].isEnd){
+                        state.grid[i][j].distance=Infinity;
+                        state.grid[i][j].isTraversed=false;
+                        state.grid[i][j].isWall=false;
+                        state.grid[i][j].wallBeforeStartEnd=false;
+                        state.grid[i][j].cellDesign=true;
+                        state.grid[i][j].parent=null;
+                        state.grid[i][j].isPath=false;
+                    }
+                    else{
+                        state.grid[i][j].distance=Infinity;
+                        state.grid[i][j].isTraversed=false;
+                        state.grid[i][j].cellDesign=true;
+                        state.grid[i][j].parent=null;
+                        state.grid[i][j].isPath=false;
+                    }
+                }
+            }
         }
     },
 })
@@ -200,6 +245,8 @@ export const {
     updateCellForWall,
     clearWalls,
     setMazeStructure,
+    createPath,
+    clearPath
 } = gridSlice.actions;
 
 

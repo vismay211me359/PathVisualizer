@@ -4,9 +4,14 @@ import { useDispatch,useSelector} from 'react-redux';
 import { setAlgorithm,setMaze,setSpeed } from '../context/SettingsSlice';
 import { resetGrid,clearWalls,clearPath} from '../context/GridsSlice';
 import { mazeHandlerFunction } from '../utils/mazeStructures.js/mazeHandler';
-import { toast } from 'react-toastify';
 import { toggleGraphVisualization,togglePathVisualization } from '../context/VisualizeSlice';
 import { pathHandlerFunction } from '../utils/pathAlgos.js/pathHandler';
+import { mazeOptions,algorithmsOptions,speedOptions } from '../helpers/theVariables';
+import { onclickHandler,clearBoardHandler,clearWallsHandler,clearPathHandler } from '../helpers/onClickhandlers';
+import { selectMazeonchange,selectAlgorithmonchange,selectSpeedonchange } from '../helpers/onChangehandlers';
+import { largerNavSelectClass,largerNavOnClickFirst,largerNavOnClickSecond } from '../helpers/classNames';
+import SelectComponent from './SelectComponent';
+import ButtonComponent from './ButtonComponent';
 
 const LargeNav = () => {
 
@@ -18,138 +23,29 @@ const LargeNav = () => {
     const isPathVisualizing=useSelector(state=>state.visualization.isPathVisualized);
     const grid=useSelector(state=>state.gridslice.grid);
 
-    const mazeOptions = [
-        { label: 'Binary Tree', value: 'binaryTree' },
-        { label: 'No Maze', value: 'noMaze' },
-        { label: 'Recursive Division', value: 'recursiveDivision' },
-        { label: 'Random Walls', value: 'randomWalls' },
-    ];
-
-    const speedOptions = [
-        { label: 'Fast', value: 0.5 },
-        { label: 'Medium', value: 3.5 },
-        { label: 'Slow', value: 6 },
-        { label: 'Full Speed', value: 0 },
-    ];
-
-    const algorithmsOptions =[
-        { label: 'Dijkstra', value: 'dijkstra' },
-        { label: 'Breadth First Search', value: 'breadthFirstSearch' },
-        { label: 'Depth First Search', value: 'depthFirstSearch' },
-        { label: 'A*', value: 'aStar'},
-    ];
-
-    const onclickHandler=async(e)=>{
-        dispatch(toggleGraphVisualization(true));
-        dispatch(togglePathVisualization(true));
-        try{
-            await pathHandlerFunction(grid,speed,algorithm);
-            dispatch(toggleGraphVisualization(false));
-        }catch(err){
-            toast.error("Error!, Reload...",{autoClose:5000});
-            console.log(err);
-        }
-    }
-
-
-    const clearBoardHandler=(e)=>{
-        e.preventDefault();
-        dispatch(resetGrid());
-        dispatch(togglePathVisualization(false));
-    }
-
-    const clearWallsHandler=(e)=>{
-        e.preventDefault();
-        dispatch(clearWalls());
-    }
-
-    const clearPathHandler=(e)=>{
-        e.preventDefault();
-        dispatch(clearPath());
-        dispatch(togglePathVisualization(false));
-    }
-
 
     return (
         <nav className="p-4 flex items-center justify-between text-white">
             <h1 className="text-2xl font-bold">Pathfinding Visualizer</h1>
 
             <div className="flex items-center space-x-4">
+                <SelectComponent labelName="Maze" selectValue={maze} onChangehandler={(e)=>{selectMazeonchange(e,dispatch,toggleGraphVisualization,setMaze,mazeHandlerFunction,grid,speed)}}  theClassName={largerNavSelectClass} isDisabled={isGraphVisualizing || isPathVisualizing} theShowCaseValues={mazeOptions}/>
 
-                <div>
-                    <label className="text-sm block">Maze</label>
-                    <select
-                        value={maze}
-                        onChange={async(e) => {
-                            dispatch(toggleGraphVisualization(true));
-                            dispatch(setMaze(e.target.value))
-                            try{
-                                await mazeHandlerFunction(grid,speed,e.target.value);
-                                dispatch(toggleGraphVisualization(false));
-                            }catch(err){
-                                toast.error("Error!, Reload...",{autoClose:5000});
-                            }
-                        }}
-                        className="bg-maze-background text-white px-4 py-2 rounded hover:bg-gray-800 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed"
-                        disabled={isGraphVisualizing || isPathVisualizing}
-                    >
-                        {mazeOptions.map((option) => (
-                            <option key={option.value} value={option.value}>
-                                {option.label}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+                <SelectComponent labelName="Algorithms" selectValue={algorithm} onChangehandler={(e)=>{selectAlgorithmonchange(e,dispatch,setAlgorithm)}}  theClassName={largerNavSelectClass} isDisabled={isGraphVisualizing || isPathVisualizing} theShowCaseValues={algorithmsOptions}/>
 
-                <div>
-                    <label className="text-sm block">Algorithms</label>
-                    <select
-                        value={algorithm}
-                        onChange={(e) => {dispatch(setAlgorithm(e.target.value))}}
-                        className="bg-maze-background text-white px-4 py-2 rounded hover:bg-gray-800 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed"
-                        disabled={isGraphVisualizing || isPathVisualizing}
-                    >
-                        {algorithmsOptions.map((option) => (
-                            <option key={option.value} value={option.value}>
-                                {option.label}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-
-                <div>
-                    <label className="text-sm block">Speed</label>
-                    <select
-                        value={speed}
-                        onChange={(e) => {dispatch(setSpeed(e.target.value))}}
-                        className="bg-maze-background text-white px-4 py-2 rounded hover:bg-gray-800 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed"
-                        disabled={isGraphVisualizing || isPathVisualizing}
-                    >
-                        {speedOptions.map((option) => (
-                            <option key={option.value} value={option.value}>
-                                {option.label}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+                <SelectComponent labelName="Spped" selectValue={speed} onChangehandler={(e)=>{selectSpeedonchange(e,dispatch,setSpeed)}}  theClassName={largerNavSelectClass} isDisabled={isGraphVisualizing || isPathVisualizing} theShowCaseValues={speedOptions}/>
             </div>
 
             {/* Buttons Section */}
             <div className="flex items-center space-x-4">
-                <button className="bg-maze-background px-4 py-2 rounded text-white hover:bg-gray-800 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed" disabled={isGraphVisualizing} onClick={clearBoardHandler}>
-                    Clear Board
-                </button>
-                <button className="bg-maze-background px-4 py-2 rounded text-white hover:bg-gray-800 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed" disabled={isGraphVisualizing} onClick={clearWallsHandler}>
-                    Clear Walls
-                </button>
-                <button className="bg-maze-background px-4 py-2 rounded text-white hover:bg-gray-800 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed" disabled={isGraphVisualizing} onClick={clearPathHandler}>
-                    Clear Paths
-                </button>
 
-                {/* Play Button */}
-                <button className="bg-custom-green p-4 rounded-full text-white hover:bg-green-600 transition-all duration-300 disabled:cursor-not-allowed disabled:bg-green-300" onClick={onclickHandler} disabled={isGraphVisualizing || isPathVisualizing}>
-                    <FaPlay />
-                </button>
+                <ButtonComponent theButtonClass={largerNavOnClickFirst} isDisabled={isGraphVisualizing} theOnClickHandler={(e)=>{clearBoardHandler(e,dispatch,resetGrid,togglePathVisualization)}} theContent={"Clear Board"}/>
+
+                <ButtonComponent theButtonClass={largerNavOnClickFirst} isDisabled={isGraphVisualizing} theOnClickHandler={(e)=>{clearWallsHandler(e,dispatch,clearWalls)}} theContent={"Clear Walls"}/>
+
+                <ButtonComponent theButtonClass={largerNavOnClickFirst} isDisabled={isGraphVisualizing} theOnClickHandler={(e)=>{clearPathHandler(e,dispatch,clearPath,togglePathVisualization)}} theContent={"Clear Paths"}/>
+
+                <ButtonComponent theButtonClass={largerNavOnClickSecond} isDisabled={isGraphVisualizing || isPathVisualizing} theOnClickHandler={(e)=>{onclickHandler(e,toggleGraphVisualization,togglePathVisualization,pathHandlerFunction,dispatch,grid,speed,algorithm)}} theContent={<FaPlay />}/>
             </div>
         </nav>
     )

@@ -26,7 +26,9 @@ function createCell(col, row, startCell, endCell) {
             parent: null,
             isPath: false,
             wallBeforeStartEnd:false,
-            cellDesign:false,
+            weight:0,
+            isMiddleMan:false,
+            middleManOrder:0,
         }
     }
     if (row === endCell.row && col === endCell.col) {
@@ -41,7 +43,9 @@ function createCell(col, row, startCell, endCell) {
             parent:null,
             isPath:false,
             wallBeforeStartEnd:false,
-            cellDesign:false,
+            weight:0,
+            isMiddleMan:false,
+            middleManOrder:0,
         }
     }
     return {
@@ -55,6 +59,8 @@ function createCell(col, row, startCell, endCell) {
         isTraversed: false,
         parent: null,
         wallBeforeStartEnd:false,
-        cellDesign:false,
+        weight:0,
+        isMiddleMan:false,
+        middleManOrder:0,
     };
 }

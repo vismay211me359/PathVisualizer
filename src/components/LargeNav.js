@@ -2,10 +2,18 @@ import React from 'react';
 import { FaPlay } from 'react-icons/fa';
 import { useDispatch,useSelector} from 'react-redux';
 import { setAlgorithm,setMaze,setSpeed } from '../context/SettingsSlice';
-import { resetGrid,clearWalls,clearPath} from '../context/GridsSlice';
+
+import { resetGridFunction } from '../utils/mazeStructures.js/resetGrid';
+import { clearPathFucntion } from '../utils/mazeStructures.js/clearPath';
+import { noMazeFunction } from '../utils/mazeStructures.js/noMaze';
+
+
 import { mazeHandlerFunction } from '../utils/mazeStructures.js/mazeHandler';
+
 import { toggleGraphVisualization,togglePathVisualization } from '../context/VisualizeSlice';
+
 import { pathHandlerFunction } from '../utils/pathAlgos.js/pathHandler';
+
 import { mazeOptions,algorithmsOptions,speedOptions } from '../helpers/theVariables';
 import { onclickHandler,clearBoardHandler,clearWallsHandler,clearPathHandler } from '../helpers/onClickhandlers';
 import { selectMazeonchange,selectAlgorithmonchange,selectSpeedonchange } from '../helpers/onChangehandlers';
@@ -21,7 +29,6 @@ const LargeNav = () => {
     const algorithm=useSelector(state=>state.settings.algorithm);
     const isGraphVisualizing=useSelector(state=>state.visualization.isGraphVisualized);
     const isPathVisualizing=useSelector(state=>state.visualization.isPathVisualized);
-    const grid=useSelector(state=>state.gridslice.grid);
 
 
     return (
@@ -29,7 +36,7 @@ const LargeNav = () => {
             <h1 className="text-2xl font-bold">Pathfinding Visualizer</h1>
 
             <div className="flex items-center space-x-4">
-                <SelectComponent labelName="Maze" selectValue={maze} onChangehandler={(e)=>{selectMazeonchange(e,dispatch,toggleGraphVisualization,setMaze,mazeHandlerFunction,grid,speed)}}  theClassName={largerNavSelectClass} isDisabled={isGraphVisualizing || isPathVisualizing} theShowCaseValues={mazeOptions}/>
+                <SelectComponent labelName="Maze" selectValue={maze} onChangehandler={(e)=>{selectMazeonchange(e,dispatch,toggleGraphVisualization,setMaze,mazeHandlerFunction,speed)}}  theClassName={largerNavSelectClass} isDisabled={isGraphVisualizing || isPathVisualizing} theShowCaseValues={mazeOptions}/>
 
                 <SelectComponent labelName="Algorithms" selectValue={algorithm} onChangehandler={(e)=>{selectAlgorithmonchange(e,dispatch,setAlgorithm)}}  theClassName={largerNavSelectClass} isDisabled={isGraphVisualizing || isPathVisualizing} theShowCaseValues={algorithmsOptions}/>
 
@@ -39,13 +46,13 @@ const LargeNav = () => {
             {/* Buttons Section */}
             <div className="flex items-center space-x-4">
 
-                <ButtonComponent theButtonClass={largerNavOnClickFirst} isDisabled={isGraphVisualizing} theOnClickHandler={(e)=>{clearBoardHandler(e,dispatch,resetGrid,togglePathVisualization)}} theContent={"Clear Board"}/>
+                <ButtonComponent theButtonClass={largerNavOnClickFirst} isDisabled={isGraphVisualizing} theOnClickHandler={(e)=>{clearBoardHandler(e,dispatch,resetGridFunction,togglePathVisualization)}} theContent={"Clear Board"}/>
 
-                <ButtonComponent theButtonClass={largerNavOnClickFirst} isDisabled={isGraphVisualizing} theOnClickHandler={(e)=>{clearWallsHandler(e,dispatch,clearWalls)}} theContent={"Clear Walls"}/>
+                <ButtonComponent theButtonClass={largerNavOnClickFirst} isDisabled={isGraphVisualizing} theOnClickHandler={(e)=>{clearWallsHandler(e,noMazeFunction)}} theContent={"Clear Walls"}/>
 
-                <ButtonComponent theButtonClass={largerNavOnClickFirst} isDisabled={isGraphVisualizing} theOnClickHandler={(e)=>{clearPathHandler(e,dispatch,clearPath,togglePathVisualization)}} theContent={"Clear Paths"}/>
+                <ButtonComponent theButtonClass={largerNavOnClickFirst} isDisabled={isGraphVisualizing} theOnClickHandler={(e)=>{clearPathHandler(e,dispatch,clearPathFucntion,togglePathVisualization)}} theContent={"Clear Paths"}/>
 
-                <ButtonComponent theButtonClass={largerNavOnClickSecond} isDisabled={isGraphVisualizing || isPathVisualizing} theOnClickHandler={(e)=>{onclickHandler(e,toggleGraphVisualization,togglePathVisualization,pathHandlerFunction,dispatch,grid,speed,algorithm)}} theContent={<FaPlay />}/>
+                <ButtonComponent theButtonClass={largerNavOnClickSecond} isDisabled={isGraphVisualizing || isPathVisualizing} theOnClickHandler={(e)=>{onclickHandler(e,toggleGraphVisualization,togglePathVisualization,pathHandlerFunction,dispatch,speed,algorithm)}} theContent={<FaPlay />}/>
             </div>
         </nav>
     )

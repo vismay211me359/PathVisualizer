@@ -3,7 +3,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { FaChevronUp, FaChevronDown, FaPlay } from 'react-icons/fa';
 import { SiInstapaper } from 'react-icons/si';
 import { initial_Cols, initial_Rows } from '../utils/constants';
-import { changeSizeOfGrid, updateCellForWall, updateEndCell, updateStartCell } from '../context/GridsSlice';
+
+import { changeSizeOfGrid } from '../utils/mazeStructures.js/changeSizeOfGrid';
+import { updateCellForWall } from '../utils/mazeStructures.js/updateCellForWall';
+import { updateEndCellFucntion } from '../utils/mazeStructures.js/updateEndCell';
+import { updateStartCell } from '../utils/mazeStructures.js/updateStartCells';
+
+
 import { toggleGraphVisualization, togglePathVisualization } from '../context/VisualizeSlice';
 import { pathHandlerFunction } from '../utils/pathAlgos.js/pathHandler';
 import { handleFormToggle, resetValues, navbarHandler, handleMouseDown, handleMouseEnter, handleMouseUp, onclickHandler } from '../helpers/onClickhandlers';
@@ -12,11 +18,10 @@ import GridForm from './GridForm';
 import ButtonComponent from './ButtonComponent';
 
 const Grid = ({ toggleNavbar, isNavbarVisible }) => {
-    const grid = useSelector(state => state.gridslice.grid);
     const isGraphVisualizing = useSelector(state => state.visualization.isGraphVisualized);
     const isPathVisualizing = useSelector(state => state.visualization.isPathVisualized);
-    const x = grid.length;
-    const y = grid[0].length;
+    const x = useSelector(state=>state.gridslice.rows);
+    const y = useSelector(state=>state.gridslice.cols);
     const [size, setSize] = useState({ width: '100vw', height: '100vw' });
     const [isMousePressed, setIsMousePressed] = useState(false);
     const [isDraggingStart, setIsDraggingStart] = useState(false); // Is the start cell being dragged?
@@ -74,10 +79,8 @@ const Grid = ({ toggleNavbar, isNavbarVisible }) => {
                             height: '90%',
                         }}>
                         <TheTable
-                            grid={grid}
-                            borderVisible={borderVisible}
-                            handleMouseDown={(rowIndex, colIndex) => { handleMouseDown(rowIndex, colIndex, isGraphVisualizing, isPathVisualizing, grid, setIsDraggingStart, setIsDraggingEnd, dispatch, updateCellForWall, setIsMousePressed) }}
-                            handleMouseEnter={(rowIndex, colIndex) => { handleMouseEnter(rowIndex, colIndex, isGraphVisualizing, isPathVisualizing, isDraggingStart, grid, dispatch, updateStartCell, isDraggingEnd, updateEndCell, isMousePressed, updateCellForWall) }}
+                            handleMouseDown={(rowIndex, colIndex) => { handleMouseDown(rowIndex, colIndex, isGraphVisualizing, isPathVisualizing, setIsDraggingStart, setIsDraggingEnd, updateCellForWall, setIsMousePressed) }}
+                            handleMouseEnter={(rowIndex, colIndex) => { handleMouseEnter(rowIndex, colIndex, isGraphVisualizing, isPathVisualizing, isDraggingStart, updateStartCell, isDraggingEnd, updateEndCellFucntion, isMousePressed, updateCellForWall) }}
                             handleMouseUp={() => { handleMouseUp(setIsMousePressed, setIsDraggingEnd, setIsDraggingStart) }}
                         />
                     </div>
@@ -93,7 +96,7 @@ const Grid = ({ toggleNavbar, isNavbarVisible }) => {
                     <ButtonComponent
                         theButtonClass="bg-custom-green p-4 rounded-full text-white hover:bg-green-600 transition-all duration-300 disabled:cursor-not-allowed disabled:bg-green-300"
                         isDisabled={isGraphVisualizing || isPathVisualizing}
-                        theOnClickHandler={(e) => { onclickHandler(e, toggleGraphVisualization, togglePathVisualization, pathHandlerFunction, dispatch, grid, speed, algorithm) }}
+                        theOnClickHandler={(e) => { onclickHandler(e, toggleGraphVisualization, togglePathVisualization, pathHandlerFunction, dispatch, speed, algorithm) }}
                         theContent={<FaPlay />}
                     />
                     <ButtonComponent

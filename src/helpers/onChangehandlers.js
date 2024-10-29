@@ -1,13 +1,14 @@
 import { toast } from "react-toastify";
 
-export const selectMazeonchange=async(e,dispatch,toggleGraphVisualization,setMaze,mazeHandlerFunction,grid,speed)=>{
+export const selectMazeonchange=async(e,dispatch,toggleGraphVisualization,setMaze,mazeHandlerFunction,speed)=>{
     dispatch(toggleGraphVisualization(true));
     dispatch(setMaze(e.target.value))
     try{
-        await mazeHandlerFunction(grid,speed,e.target.value);
+        await mazeHandlerFunction(speed,e.target.value);
         dispatch(toggleGraphVisualization(false));
     }catch(err){
         toast.error("Error!, Reload...",{autoClose:5000});
+        console.log(err);
     }
 }
 

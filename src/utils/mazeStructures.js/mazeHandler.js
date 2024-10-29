@@ -1,20 +1,25 @@
-import { store } from "../../redux/Store";
-import { setMazeStructure } from "../../context/GridsSlice";
 import { binaryTreeFunction, binaryTreeWalls } from "./binaryTree";
+import { binaryTreeForUi } from "./binaryTreeUi";
+import { noMazeFunction } from "./noMaze";
+import { randomWallsFunction } from "./randomWalls";
 import { recursiveDivisionFucntion } from "./recursiveDivision";
+import { recursiveDivisionUi } from "./recursiveDivisionUi";
 
-export const mazeHandlerFunction=async (grid,speed,mazeType)=>{
-    if(mazeType==="noMaze"  || mazeType==="randomWalls"){
-        store.dispatch(setMazeStructure({mazeType}));
-        return true;
+
+export const mazeHandlerFunction= async(speed,mazeType)=>{
+    if(mazeType==="noMaze"){
+       noMazeFunction();
+    }
+    else if(mazeType==="randomWalls"){
+        randomWallsFunction();
     }
     else if(mazeType==="binaryTree"){
-        await binaryTreeWalls(grid,speed,mazeType);
-        await binaryTreeFunction(grid,speed,mazeType);
-        return true;
+        const wallsArray=binaryTreeWalls();
+        const theNoWallArray=binaryTreeFunction();
+        await binaryTreeForUi(wallsArray,theNoWallArray,speed);
     }
     else{
-        await recursiveDivisionFucntion(grid,speed,mazeType);
-        return true;
+        const wallsArray=recursiveDivisionFucntion();
+        await recursiveDivisionUi(wallsArray,speed);
     }
 }

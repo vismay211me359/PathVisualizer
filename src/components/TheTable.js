@@ -1,20 +1,50 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useSelector } from 'react-redux';
+import {normalTileStyle, normalTileStyleBorder, startTileStyle, startTileStyleBorder, endTileStyle, endTileStyleBorder } from '../helpers/classNames';
 
-const TheTable = ({grid,borderVisible,handleMouseDown,handleMouseEnter,handleMouseUp}) => {
+const TheTable = ({ handleMouseDown, handleMouseEnter, handleMouseUp }) => {
+    const rows = useSelector((state) => state.gridslice.rows);
+    const cols = useSelector((state) => state.gridslice.cols);
+    useEffect(() => {
+        const addInitialStyles = () => {
+            let normalStyle = normalTileStyleBorder;
+            let startStyle = startTileStyleBorder;
+            let endStyle = endTileStyleBorder;
+
+            if (rows > 100 || cols > 100) {
+                normalStyle = normalTileStyle;
+                startStyle = startTileStyle;
+                endStyle = endTileStyle;
+            }
+            for (let rowIndex = 0; rowIndex < rows; rowIndex++) {
+                for (let colIndex = 0; colIndex < cols; colIndex++) {
+                    const cell = document.getElementById(`${rowIndex}-${colIndex}`);
+                    if (cell) {
+                        if(rowIndex===0 && colIndex===0){
+                            cell.className=startStyle;
+                        }
+                        else if(rowIndex===rows-1  && colIndex===cols-1){
+                            cell.className=endStyle;
+                        }
+                        else{
+                            cell.className=normalStyle;
+                        }
+                    }
+                }
+            }
+        };
+
+        addInitialStyles();
+    }, [rows,cols]);
+
+
     return (
         <>
-            {grid.map((row, rowIndex) => (
-                row.map((cell, colIndex) => (
+            {Array.from({ length: rows }).map((_, rowIndex) => (
+                Array.from({ length: cols }).map((_, colIndex) => (
                     <div
                         key={`${rowIndex}-${colIndex}`}
-                        className={`${borderVisible ? 'border-sky-200 border-r border-t' : ''} flex items-center justify-center ${cell.cellDesign ? (cell.isPath ? 'animate-path' : (cell.isTraversed ? 'animate-traversed' : (cell.isWall ? 'animate-wallExpand' : ''))) : ''}`}
-                        style={{
-                            backgroundColor: cell.isStart ? 'green' :
-                                cell.isEnd ? 'red' :
-                                    cell.isPath ? '#fde68a' :
-                                        cell.isTraversed ? '#22d3ee' :
-                                            cell.isWall ? 'white' : 'transparent',
-                        }}
+                        id={`${rowIndex}-${colIndex}`}
                         onMouseDown={() => handleMouseDown(rowIndex, colIndex)}
                         onMouseEnter={() => handleMouseEnter(rowIndex, colIndex)}
                         onMouseUp={handleMouseUp}

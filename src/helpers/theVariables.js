@@ -3,12 +3,12 @@ export const mazeOptions = [
     { label: 'Binary Tree', value: 'binaryTree' },
     { label: 'Recursive Division', value: 'recursiveDivision' },
     { label: 'Random Walls', value: 'randomWalls' },
-    { label: 'Random Weights', value: 'randomWeights' },
-    { label: 'Custom Weights', value: 'customWeights' },
-    { label: 'Random Middle Man', value: 'randomMiddleMan' },
-    { label: 'Custom Middle Man', value: 'customMiddleMan' },
-    { label: 'Multiple Start Points', value: 'multipleStartPoints' },
-    { label: 'Multiple End Points', value: 'multipleEndPoints' },
+    // { label: 'Random Weights', value: 'randomWeights' },
+    // { label: 'Custom Weights', value: 'customWeights' },
+    // { label: 'Random Middle Man', value: 'randomMiddleMan' },
+    // { label: 'Custom Middle Man', value: 'customMiddleMan' },
+    // { label: 'Multiple Start Points', value: 'multipleStartPoints' },
+    // { label: 'Multiple End Points', value: 'multipleEndPoints' },
 ];
 
 export const speedOptions = [
@@ -21,9 +21,9 @@ export const speedOptions = [
 ];
 
 export const algorithmsOptions =[
-    { label: 'Dijkstra', value: 'dijkstra' },
+    // { label: 'Dijkstra', value: 'dijkstra' },
     { label: 'Breadth First Search', value: 'breadthFirstSearch' },
     { label: 'Depth First Search', value: 'depthFirstSearch' },
-    { label: 'A*', value: 'aStar'},
+    // { label: 'A*', value: 'aStar'},
 ];
 
